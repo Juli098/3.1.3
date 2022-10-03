@@ -1,0 +1,383 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <title>Admin panel</title>
+  <style>
+    body {
+      background: #fafffe;
+    }
+  </style>
+</head>
+
+
+<body>
+<!--Начало общего container-fluid-->
+<div class="container-fluid">
+  <nav class="navbar fixed-top navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">
+            <span th:text="${userAdmin.getUsername()}"> VALUE </span> with roles:
+            <span th:text="${userAdmin.getRoles()}"> VALUE </span>
+        </span>
+    <span class="navbar-text">
+            <form th:action="@{/logout}" method="POST">
+                <button type="submit" class="btn btn-dark" role="button">Logout</button>
+            </form>
+        </span>
+  </nav>
+
+  <br><br><br><br>
+
+  <!--Начало row-->
+  <div class="row">
+    <!-- Кнопки панели слева -->
+    <div class="col-md-2">
+      <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a class="nav-link active" id="v-pills-admin-tab" data-toggle="pill" href="#v-pills-admin" role="tab"
+           aria-controls="v-pills-admin" aria-selected="true">Admin</a>
+        <a class="nav-link" id="v-pills-user-tab" data-toggle="pill" href="#v-pills-user" role="tab"
+           aria-controls="v-pills-user" aria-selected="false">User</a>
+      </div>
+    </div>
+    <!-- Конец кнопок панели слева -->
+
+    <!-- Содержание кнопок панели правая часть сайта -->
+    <div class="col-md-10">
+      <!-- Начало таб контента Admin и User -->
+      <div class="tab-content" id="v-pills-tabContent">
+        <!-- Вкладка id="v-pills-admin" -->
+        <div class="tab-pane fade show active" id="v-pills-admin" role="tabpanel"
+             aria-labelledby="v-pills-admin-tab">
+          <div class="container-fluid">
+            <h1> Admin panel </h1>
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#tab1" data-toggle="tab">
+                  Users table
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#tab2" data-toggle="tab">
+                  New user
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Контейнер для содержимого двух вкладок All users и New user -->
+          <div class="container-fluid">
+            <!-- Начало таб контента All users и New user -->
+            <div class="tab-content">
+              <!-- Первая вкладка tab1 All users -->
+              <div class="tab-pane active" id="tab1">
+                <div class="card">
+                  <!-- Шапка для вкладки tab1 All users -->
+                  <div class="card-header">
+                    <div class="m-1">
+                      <h4>All users</h4>
+                    </div>
+                  </div>
+                  <!-- Конец шапки для вкладки tab1 All users -->
+
+                  <!-- Тело для вкладки tab1 All users -->
+                  <div class="card-body" bg-primary text-white>
+                    <!-- Таблица All users -->
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Age</th>
+                          <th>Username</th>
+                          <th>Role</th>
+                          <th>Edit</th>
+                          <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${allUsers}">
+                          <td><p th:text="${user.getId()}">VALUE</p></td>
+                          <td><p th:text="${user.getAge()}">VALUE</p></td>
+                          <td><p th:text="${user.getUsername()}">VALUE</p></td>
+                          <td><p th:text="${user.getRoles()}">VALUE</p></td>
+                          <td>
+                            <button type="button" class="btn btn-info" data-toggle="modal"
+                                    th:data-target="${'#modalEdit' + user.id}"> Edit
+                            </button>
+
+                            <!-- Всплывающее окно от модальной кнопки edi -->
+                            <div class="modal" th:id="${'modalEdit' + user.id}" tabindex="-1"
+                                 role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+                              <form th:method="PATCH" th:action="@{'/admin/edit/' + ${user.id}}">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="modalEditLabel">Edit user</h5>
+                                      <button type="button" class="close" data-dismiss="modal"
+                                              aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <!-- Тело модального окна от модальной кнопки edit -->
+                                    <div class="modal-body">
+                                      <div class="text-center">
+                                        <div class="form-group">
+                                          <label for="editId"><b>ID</b></label>
+                                          <input type="number" class="form-control"
+                                                 th:value="*{user.id}" id="editId"
+                                                 disabled>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                          <label for="editAge"><b>Age</b></label>
+                                          <input type="number" min="1" max="150"
+                                                 step="1" class="form-control"
+                                                 name="age" th:value="*{user.age}"
+                                                 id="editAge">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editUsername"><b>Username</b></label>
+                                          <input type="text" class="form-control"
+                                                 name="username" th:value="*{user.username}"
+                                                 id="editUsername">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editPassword"><b>Password</b></label>
+                                          <input type="password" class="form-control"
+                                                 name="password" th:value="*{user.password}"
+                                                 id="editPassword">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="editRoles"><b>Role</b></label>
+                                          <select multiple
+                                                  class="form-control form-control-sm"
+                                                  id="editRoles" name="roles"
+                                                  th:value="*{user.roles}"
+                                                  size="2" required>
+                                            <option th:each="role : ${allRoles}"
+                                                    th:text="${role.toString()}"
+                                                    th:value="${role.getId()}">Role </option>
+                                          </select>
+                                        </div>
+                                      </div>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-primary">Edit</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <!-- Конец всплывающего окно от модальной кнопки edit -->
+                          </td>
+
+                          <td>
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    th:data-target="${'#modalDelete' + user.id}"> Delete
+                            </button>
+
+                            <!-- Всплывающее окно от модальной кнопки delete  -->
+                            <div class="modal" th:id="${'modalDelete' + user.id}"
+                                 tabindex="-1" role="dialog"
+                                 aria-labelledby="modalDeleteLabel" aria-hidden="true">
+                              <form th:method="DELETE" th:action="@{'/admin/delete/' + ${user.id}}">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="modalDeleteLabel">Delete user</h5>
+                                      <button type="button" class="close" data-dismiss="modal"
+                                              aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="text-center">
+                                        <div class="form-group">
+                                          <label for="deleteId"><b>ID</b></label>
+                                          <input type="number" class="form-control"
+                                                 th:value="*{user.id}" id="deleteId"
+                                                 disabled>
+                                        </div>
+
+
+
+
+                                        <div class="form-group">
+                                          <label for="deleteAge"><b>Age</b></label>
+                                          <input type="number" min="1" max="150" step="1"
+                                                 class="form-control" th:value="*{user.age}"
+                                                 id="deleteAge" disabled>
+
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="deleteEmail"><b>Username</b></label>
+                                          <input type="text" class="form-control"
+                                                 th:value="*{user.username}"
+                                                 id="deleteEmail" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="deleteRoles"><b>Role</b></label>
+                                          <select multiple class="form-control form-control-sm"
+                                                  id="deleteRoles" th:value="*{user.roles}"
+                                                  size="2" required disabled>
+                                            <option th:each="role : ${allRoles}"
+                                                    th:text="${role.toString()}"
+                                                    th:value="${role.getId()}">Role </option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-danger">Delete</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <!-- Конец всплывающего окно от модальной кнопки delete -->
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- Конец таблицы All users -->
+                  </div>
+                  <!-- Конец тела для вкладки tab1 All users -->
+                </div>
+              </div>
+              <!-- Конец первой вкладки tab1 All users -->
+
+              <!-- Вторая вкладка tab2 Add new user -->
+              <div class="tab-pane" id="tab2">
+                <div class="card">
+                  <!-- Шапка для вкладки tab2 Add new user -->
+                  <div class="card-header">
+                    <div class="m-1">
+                      <h4>Add new user</h4>
+                    </div>
+                  </div>
+                  <!-- Конец шапки для вкладки tab2 Add new user -->
+
+
+                  <!-- Тело для вкладки tab2 Add new user -->
+                  <div class="card-body" bg-primary text-white>
+                    <!-- Контейнер с содержанием для формы Add new user -->
+                    <div class="container">
+                      <div class="text-center">
+                        <form method="POST" th:action="@{admin}" th:object="${newUser}"
+                              role="form" style="max-width:300px;margin:auto;">
+
+                          <div class="form-group">
+                            <label><b>Age</b></label>
+                            <input type="number" th:field="*{age}" class="form-control"
+                                   placeholder="Age">
+                          </div>
+                          <div class="form-group">
+                            <label><b>Username</b></label>
+                            <input type="text" th:field="*{username}" class="form-control"
+                                   placeholder="Email" required>
+                          </div>
+                          <div class="form-group">
+                            <label><b>Password</b></label>
+                            <input type="password" th:field="*{password}" class="form-control"
+                                   placeholder="Password" required>
+                          </div>
+                          <div class="form-group">
+                            <label><b>Role</b></label>
+                            <select multiple class="form-control form-control-sm" name="roles" size="2">
+                              <option th:each="role : ${allRoles}"
+                                      th:text="${role.toString()}"
+                                      th:value="${role.getId()}">Role </option>
+                            </select>
+                          </div>
+                          <button type="submit" class="btn btn-success">Add new user</button>
+                        </form>
+                      </div>
+                    </div>
+                    <!-- Конец контейнера с содержанием для формы Add new user -->
+                  </div>
+                  <!-- Конец тела для вкладки tab2 Add new user -->
+                </div>
+              </div>
+              <!-- Конец второй вкладки tab2 Add new user -->
+            </div>
+          </div>
+          <!-- Конец контейнера для содержимого двух вкладок от id="v-pills-admin" -->
+        </div>
+        <!-- Конец вкладки с id="v-pills-admin" -->
+
+
+        <!-- Вкладка с id="v-pills-user" -->
+        <div class="tab-pane fade" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
+          <!-- Контейнер для содержимого вкладки от id="v-pills-user" -->
+          <div class="container-fluid">
+            <h1> User information-page </h1>
+            <div class="card">
+              <div class="card-header">
+                <div class="m-1">
+                  <h4>About user</h4>
+                </div>
+              </div>
+
+              <div class="card-body" bg-primary text-white>
+                <!-- Страница информации юзера  -->
+                <table class="table table-striped table-hover">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Age</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td><p th:text="${userAdmin.getId()}">VALUE</p></td>
+                    <td><p th:text="${userAdmin.getAge()}">VALUE</p></td>
+                    <td><p th:text="${userAdmin.getUsername()}">VALUE</p></td>
+                    <td><p th:text="${userAdmin.getRoles()}">VALUE</p></td>
+                  </tr>
+                  </tbody>
+                </table>
+                <!-- Конец страницы информации юзера  -->
+              </div>
+            </div>
+          </div>
+          <!-- Конец контейнера для содержимого вкладки от id="v-pills-user" -->
+        </div>
+        <!-- Конец вкладки с id="v-pills-user" -->
+      </div>
+      <!-- Конец таб контента Admin и User -->
+    </div>
+    <!-- Конец содержание кнопок панели правая часть сайта -->
+  </div>
+  <!--Конец row-->
+</div>
+<!--Конец общего container-fluid-->
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

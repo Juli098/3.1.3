@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.editUser(user);
 
     }

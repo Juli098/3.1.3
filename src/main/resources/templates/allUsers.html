@@ -25,7 +25,7 @@
   <nav class="navbar fixed-top navbar-dark bg-dark">
         <span class="navbar-brand mb-0 h1">
             <span th:text="${userAdmin.getUsername()}"> VALUE </span> with roles:
-            <span th:text="${userAdmin.getRoles()}"> VALUE </span>
+            <span th:text="${userAdmin.getRolesString}"> VALUE </span>
         </span>
     <span class="navbar-text">
             <form th:action="@{/logout}" method="POST">
@@ -103,7 +103,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="user : ${allUsers}">
+                        <tr th:each="user : ${user}">
                           <td><p th:text="${user.getId()}">VALUE</p></td>
                           <td><p th:text="${user.getAge()}">VALUE</p></td>
                           <td><p th:text="${user.getUsername()}">VALUE</p></td>
@@ -163,7 +163,7 @@
                                                   id="editRoles" name="roles"
                                                   th:value="*{user.roles}"
                                                   size="2" required>
-                                            <option th:each="role : ${allRoles}"
+                                            <option th:each="role : ${roles}"
                                                     th:text="${role.toString()}"
                                                     th:value="${role.getId()}">Role </option>
                                           </select>
@@ -232,7 +232,7 @@
                                           <select multiple class="form-control form-control-sm"
                                                   id="deleteRoles" th:value="*{user.roles}"
                                                   size="2" required disabled>
-                                            <option th:each="role : ${allRoles}"
+                                            <option th:each="role : ${roles}"
                                                     th:text="${role.toString()}"
                                                     th:value="${role.getId()}">Role </option>
                                           </select>
@@ -277,7 +277,7 @@
                     <!-- Контейнер с содержанием для формы Add new user -->
                     <div class="container">
                       <div class="text-center">
-                        <form method="POST" th:action="@{admin}" th:object="${newUser}"
+                        <form method="POST" th:action="@{/admin/add}" th:object="${newUser}"
                               role="form" style="max-width:300px;margin:auto;">
 
                           <div class="form-group">
@@ -298,7 +298,7 @@
                           <div class="form-group">
                             <label><b>Role</b></label>
                             <select multiple class="form-control form-control-sm" name="roles" size="2">
-                              <option th:each="role : ${allRoles}"
+                              <option th:each="role : ${roles}"
                                       th:text="${role.toString()}"
                                       th:value="${role.getId()}">Role </option>
                             </select>

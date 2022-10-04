@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,42 +32,54 @@ public class AdminController {
     }
 
     @GetMapping("/allUsers")
-    public String allUsers( Model model){
+    public String allUsers( Model model, Principal principal) {
+        model.addAttribute("userAdmin", userService.loadUserByUsername(principal.getName()));
         List<User> user = userService.getAllUsers();
+        model.addAttribute("newUser", new User());
         model.addAttribute("user", user);
+        model.addAttribute("roles", roleService.getAllRoles());
 
 
 
         return "allUsers";
     }
-    @GetMapping(value = "add")
+  /*  @GetMapping(value = "add")
     public String addUser(Model model) {
         model.addAttribute("user", new User());
         return "add";
     }
+
+   */
     @PostMapping(value = "add")
-    public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(required=false) String roleAdmin) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.getRoleById(2L));
-        if (roleAdmin != null && roleAdmin.equals("ROLE_ADMIN")) {
-            roles.add(roleService.getRoleById(1L));
+    public String createUser (@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
+        if(role == 2) {
+            user.setRoles((Set<Role>) roleService.getRoleById(2L));
+        } else if(role == 1) {
+            user.setRoles((Set<Role>) roleService.getRoleById(1L));
         }
-        user.setRoles(roles);
+
         userService.addUser(user);
 
         return "redirect:/admin/allUsers";
     }
 
 
-    @GetMapping (value = "/edit/{id}")
+  /*  @GetMapping (value = "/edit/{id}")
     public String editUser(Model model, @PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
         return "edit";
     }
-    @PostMapping (value = "/edit/{id}")
-    public String userUpdate(@ModelAttribute("user") User user) {
+
+   */
+    @PatchMapping(value = "/edit/{id}")
+    public String userUpdate(@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
+
+        if(role == 2) {
+            user.setRoles((Set<Role>) roleService.getRoleById(2L));
+        } else if(role == 1) {
+            user.setRoles((Set<Role>) roleService.getRoleById(1L));
+        }
         userService.editUser(user);
         return "redirect:/admin/allUsers";
     }

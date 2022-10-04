@@ -18,13 +18,13 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
 
 
     private UserService userService;
-    private BCryptPasswordEncoder passwordEncoder;
+
 
     private RoleService roleService;
 
-    public ApplicationRunnerImpl(UserService userService, BCryptPasswordEncoder passwordEncoder, RoleService roleService) {
+    public ApplicationRunnerImpl(UserService userService, RoleService roleService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
+
         this.roleService = roleService;
     }
 
@@ -41,11 +41,11 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
             Set<Role> userRole = new HashSet<>();
             adminRole.add(admin);
             userRole.add(user);
-            userService.addUser(new User( "Misha", passwordEncoder.encode("admin"),23, adminRole ));
-            userService.addUser(new User( "Dima", passwordEncoder.encode("user"), 32, userRole ));
-            userService.addUser(new User("Kostya", passwordEncoder.encode("dimab"), 54,  userRole));
-            userService.addUser(new User("vasyap", passwordEncoder.encode("vasyap"),12, userRole));
-            userService.addUser(new User("kostyap", passwordEncoder.encode("kostyag"),10,userRole));
+            userService.addUser(new User( "Misha", ("admin"),23, adminRole ));
+            userService.addUser(new User( "Dima", ("user"), 32, userRole ));
+            userService.addUser(new User("Kostya", ("dimab"), 54,  userRole));
+            userService.addUser(new User("vasyap", ("vasyap"),12, userRole));
+            userService.addUser(new User("kostyap", ("kostyag"),10,userRole));
 
         }
     }

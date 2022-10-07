@@ -25,6 +25,7 @@ public class AdminController {
     private RoleServiceImpl roleService;
 
 
+
     public AdminController(UserServiceImpl userService, RoleServiceImpl roleService) {
         this.userService = userService;
         this.roleService = roleService;
@@ -43,19 +44,13 @@ public class AdminController {
 
         return "allUsers";
     }
-  /*  @GetMapping(value = "add")
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        return "add";
-    }
 
-   */
     @PostMapping(value = "add")
     public String createUser (@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
         if(role == 2) {
-            user.setRoles((Set<Role>) roleService.getRoleById(2L));
+            user.setRoles(Set.of(roleService.getRoleById(2L)));
         } else if(role == 1) {
-            user.setRoles((Set<Role>) roleService.getRoleById(1L));
+            user.setRoles(Set.of(roleService.getRoleById(1L)));
         }
 
         userService.addUser(user);
@@ -64,21 +59,13 @@ public class AdminController {
     }
 
 
-  /*  @GetMapping (value = "/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "edit";
-    }
-
-   */
     @PatchMapping(value = "/edit/{id}")
     public String userUpdate(@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
 
         if(role == 2) {
-            user.setRoles((Set<Role>) roleService.getRoleById(2L));
+            user.setRoles(Set.of(roleService.getRoleById(2L)));
         } else if(role == 1) {
-            user.setRoles((Set<Role>) roleService.getRoleById(1L));
+            user.setRoles(Set.of(roleService.getRoleById(1L)));
         }
         userService.editUser(user);
         return "redirect:/admin/allUsers";

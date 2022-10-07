@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import jdk.jfr.DataAmount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -45,11 +45,11 @@ public class AdminController {
         return "allUsers";
     }
 
-    @PostMapping(value = "add")
-    public String createUser (@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
-        if(role == 2) {
+    @PostMapping(value = "/add")
+    public String createUser (@ModelAttribute("user") User user, @RequestParam(value = "role") String role) {
+        if(role.equals("ROLE_USER")) {
             user.setRoles(Set.of(roleService.getRoleById(2L)));
-        } else if(role == 1) {
+        } else if(role.equals("ROLE_ADMIN")) {
             user.setRoles(Set.of(roleService.getRoleById(1L)));
         }
 
@@ -60,16 +60,22 @@ public class AdminController {
 
 
     @PatchMapping(value = "/edit/{id}")
-    public String userUpdate(@ModelAttribute("user") User user, @RequestParam(value = "role") int role) {
+    public String userUpdate(@ModelAttribute("user") User user, @RequestParam(value = "role") String role) {
 
-        if(role == 2) {
+        if(role.equals("ROLE_USER")) {
             user.setRoles(Set.of(roleService.getRoleById(2L)));
-        } else if(role == 1) {
+        } else if(role.equals("ROLE_ADMIN")) {
             user.setRoles(Set.of(roleService.getRoleById(1L)));
         }
         userService.editUser(user);
         return "redirect:/admin/allUsers";
     }
+     /*@PatchMapping("/edit/{id}")
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam(value = "role") String role) {
+        user.setRoles(Set.of(roleService.getRoleByName(role)));
+        userService.editUser(user);
+        return "redirect:/admin/allUsers";
+    }*/
 
 
 
